@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - StreetEats</title>
+  <style>
+    :root {
+        --primary: #3498db;
+        --black: #000000;
+        --white: #ffffff;
+        --dark-gray: #1a1a1a;
+        --border-color: #333;
+        --text-light: #ccc;
+    }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+        background-color: var(--black);
+        color: var(--white);
+        padding: 20px;
+    }
+    .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: var(--dark-gray);
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+    }
+    .admin-header {
+        padding: 20px 25px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .admin-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .admin-tab {
+        padding: 12px 20px;
+        cursor: pointer;
+        font-weight: 500;
+        color: var(--text-light);
+        border-bottom: 3px solid transparent;
+    }
+    .admin-tab.active {
+        color: var(--white);
+        border-bottom: 3px solid var(--primary);
+    }
+    .tab-content {
+        display: none;
+        padding: 20px 25px;
+    }
+    .tab-content.active {
+        display: block;
+    }
+    .filter-group {
+        margin-bottom: 15px;
+    }
+    .filter-group label {
+        display: block;
+        font-size: 13px;
+        color: var(--text-light);
+        margin-bottom: 5px;
+    }
+    .filter-group select {
+        padding: 8px;
+        background: var(--black);
+        color: var(--white);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 10px;
+        border-bottom: 1px solid var(--border-color);
+        text-align: left;
+    }
+    th {
+        color: var(--white);
+        font-weight: 600;
+    }
+    td {
+        color: var(--white);
+    }
+    button {
+        padding: 6px 12px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 5px;
+    }
+    button.reject {
+        background: red;
+    }
+    button:disabled {
+        background: #666;
+        cursor: not-allowed;
+    }
+    .status-verified {
+        color: #4CAF50;
+        font-weight: bold;
+    }
+    .status-pending {
+        color: #ff9800;
+        font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1>StreetEats Admin Panel</h1>
+    </div>
+    <div class="admin-tabs">
+      <div class="admin-tab active" data-tab="dashboard">Dashboard</div>
+      <div class="admin-tab" data-tab="grievances">Grievances</div>
+      <div class="admin-tab" data-tab="verification">Verification</div>
+      <div class="admin-tab" data-tab="earnings">Earnings</div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="tab-content active" id="dashboard">
+      <div class="filter-group">
+        <label for="dashboard-filter">Filter by Type</label>
+        <select id="dashboard-filter">
+          <option value="all">All</option>
+          <option value="vendor">Vendor</option>
+          <option value="supplier">Supplier</option>
+        </select>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>GST</th>
+            <th>Aadhar</th>
+            <th>Verified</th>
+          </tr>
+        </thead>
+        <tbody id="dashboard-body">
+          <tr><td colspan="5">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Grievances -->
+    <div class="tab-content" id="grievances">
+        <div class="filter-group">
+        <select id="filterSelect">
+  <option value="all">All Grievances</option>
+  <option value="vendor">Vendor Grievances</option>
+  <option value="supplier">Supplier Grievances</option>
+</select>
+        </div>
+
+<div id="grievanceList"></div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Supplier Name</th>
+            <th>Supplier Shop</th>
+            <th>Vendor Name</th>
+            <th>Issue Type</th>
+            <th>Details</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="grievance-body">
+          <tr><td colspan="6">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Verification -->
+    <div class="tab-content" id="verification">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>GST</th>
+            <th>Aadhar</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="verification-body">
+          <tr><td colspan="5">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Earnings -->
+    <div class="tab-content" id="earnings">
+      <p style="color: var(--text-light);">Earnings dashboard coming soon...</p>
+    </div>
+  </div>
+</body>
+  
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const tabs = document.querySelectorAll('.admin-tab');
+  const contents = document.querySelectorAll('.tab-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
+    });
+  });
+
+  fetchData();
+
+  document.getElementById("dashboard-filter").addEventListener("change", fetchDashboard);
+  document.getElementById("filterSelect").addEventListener("change", fetchGrievances);
+
+  function fetchData() {
+    fetchDashboard();
+    fetchGrievances();
+    fetchVerification();
+  }
+
+  function fetchDashboard() {
+    const type = document.getElementById("dashboard-filter").value;
+    fetch("http://localhost:5000/api/all-users")
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.getElementById("dashboard-body");
+        tbody.innerHTML = "";
+        const users = [
+          ...data.vendors.map(v => ({ ...v, type: "vendor" })),
+          ...data.suppliers.map(s => ({ ...s, type: "supplier" }))
+        ];
+        const filtered = type === "all" ? users : users.filter(u => u.type === type);
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='5'>No data found</td></tr>";
+          return;
+        }
+
+        filtered.forEach(user => {
+          const verifiedStatus = user.verified
+            ? '<span class="status-verified">Yes</span>'
+            : '<span class="status-pending">No</span>';
+
+          tbody.innerHTML += `
+            <tr>
+              <td>${user.fullName}</td>
+              <td>${user.type}</td>
+              <td>${user.gst || '-'}</td>
+              <td>${user.aadhar || '-'}</td>
+              <td>${verifiedStatus}</td>
+            </tr>`;
+        });
+      })
+      .catch(err => {
+        const tbody = document.getElementById("dashboard-body");
+        tbody.innerHTML = "<tr><td colspan='5'>Error loading data</td></tr>";
+        console.error('Dashboard fetch error:', err);
+      });
+  }
+
+  function fetchGrievances() {
+    const filter = document.getElementById("filterSelect").value;
+    const url = filter === 'all' ? "http://localhost:5000/api/grievances" : `http://localhost:5000/api/grievances?postedBy=${filter}`;
+
+    fetch(url)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        const tbody = document.getElementById("grievance-body");
+        tbody.innerHTML = "";
+
+        if (!Array.isArray(data) || data.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='6'>No grievances found</td></tr>";
+          return;
+        }
+
+        data.forEach(item => {
+          const issueDate = item.issueDate
+            ? new Date(item.issueDate).toLocaleDateString()
+            : 'N/A';
+
+          tbody.innerHTML += `
+            <tr>
+              <td>${item.supplierName || 'N/A'}</td>
+              <td>${item.supplierShop || 'N/A'}</td>
+              <td>${item.vendorName || 'N/A'}</td>
+              <td>${item.issueType || 'N/A'}</td>
+              <td>${item.issueDetails || 'N/A'}</td>
+              <td>${issueDate}</td>
+            </tr>`;
+        });
+      })
+      .catch(err => {
+        const tbody = document.getElementById("grievance-body");
+        tbody.innerHTML = "<tr><td colspan='6'>Error loading grievances</td></tr>";
+        console.error('Grievances fetch error:', err);
+      });
+  }
+
+  function fetchVerification() {
+    fetch("http://localhost:5000/api/unverified-users")
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.getElementById("verification-body");
+        tbody.innerHTML = "";
+
+        const renderRow = (user, type) => `
+          <tr id="user-${type}-${user._id}">
+            <td>${user.fullName}</td>
+            <td>${type}</td>
+            <td>${user.gst}</td>
+            <td>${user.aadhar}</td>
+            <td>
+              <button onclick="verify('${type}', '${user._id}')">Yes</button>
+              <button class="reject" onclick="reject('${type}', '${user._id}')">No</button>
+            </td>
+          </tr>`;
+
+        if (data.suppliers.length === 0 && data.vendors.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='5'>No pending verifications</td></tr>";
+        } else {
+          data.suppliers.forEach(user => tbody.innerHTML += renderRow(user, 'supplier'));
+          data.vendors.forEach(user => tbody.innerHTML += renderRow(user, 'vendor'));
+        }
+      })
+      .catch(err => {
+        const tbody = document.getElementById("verification-body");
+        tbody.innerHTML = "<tr><td colspan='5'>Error loading verification data</td></tr>";
+        console.error('Verification fetch error:', err);
+      });
+  }
+
+  function refreshAllData() {
+    fetchDashboard();
+    fetchVerification();
+    fetchGrievances();
+  }
+
+  window.verify = function (type, id) {
+    const row = document.getElementById(`user-${type}-${id}`);
+    if (row) {
+      const buttons = row.querySelectorAll('button');
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.textContent = btn.classList.contains('reject') ? 'Processing...' : 'Verifying...';
+      });
+    }
+
+    fetch("http://localhost:5000/api/verify-user", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userType: type, id })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Verification failed');
+      return res.json();
+    })
+    .then(() => refreshAllData())
+    .catch(err => {
+      console.error('Verification error:', err);
+      if (row) {
+        const buttons = row.querySelectorAll('button');
+        buttons.forEach(btn => {
+          btn.disabled = false;
+          btn.textContent = btn.classList.contains('reject') ? 'No' : 'Yes';
+        });
+      }
+      alert('Verification failed. Please try again.');
+    });
+  };
+
+  window.reject = function (type, id) {
+    if (!confirm('Are you sure you want to reject and delete this user?')) return;
+
+    const row = document.getElementById(`user-${type}-${id}`);
+    if (row) {
+      const buttons = row.querySelectorAll('button');
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.textContent = btn.classList.contains('reject') ? 'Rejecting...' : 'Processing...';
+      });
+    }
+
+    fetch(`http://localhost:5000/api/reject-user/${type}/${id}`, {
+      method: "DELETE"
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Rejection failed');
+      return res.json();
+    })
+    .then(() => refreshAllData())
+    .catch(err => {
+      console.error('Rejection error:', err);
+      if (row) {
+        const buttons = row.querySelectorAll('button');
+        buttons.forEach(btn => {
+          btn.disabled = false;
+          btn.textContent = btn.classList.contains('reject') ? 'No' : 'Yes';
+        });
+      }
+      alert('Rejection failed. Please try again.');
+    });
+  };
+});
+</script>
+
+</html>

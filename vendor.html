@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css">
+    <style>
+        :root {
+            --primary: #3498db;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --black: #000000;
+            --white: #ffffff;
+            --dark-gray: #1a1a1a;
+            --light-gray: #f5f5f5;
+            --border-color: #333;
+            --grievance-accent: #1035b9;
+            --accent-color: #4f46e5;
+            --accent-dark: #4338ca;
+            --error-color: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+        }
+
+        .vendor-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .auth-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .auth-info button {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-info button:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        nav {
+            background-color: var(--dark-gray);
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            color: var(--white);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            a{
+              text-decoration: none;
+              color : white;
+            }
+        }
+
+        .nav-tab:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-tab.active {
+            border-bottom: 3px solid var(--primary);
+            background-color: var(--black);
+        }
+
+        .main-content {
+            flex: 1;
+            background-color: var(--black);
+            padding: 2rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem;
+            background-color: var(--dark-gray);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--white);
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--dark-gray);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--white);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .supplier-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .supplier-card {
+            background-color: var(--dark-gray);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .supplier-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .supplier-card.active {
+            border: 2px solid var(--primary);
+        }
+
+        .supplier-image {
+            height: 150px;
+            background-color: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--white);
+        }
+
+        .supplier-info {
+            padding: 1rem;
+        }
+
+        .supplier-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .supplier-location {
+            color: var(--white);
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .supplier-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .rating-stars {
+            color: var(--warning);
+            margin-right: 0.5rem;
+        }
+
+        .rating-count {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .supplier-distance {
+            font-size: 0.9rem;
+            color: var(--white);
+            opacity: 0.8;
+        }
+
+        .menu-container {
+            display: none;
+            background-color: var(--dark-gray);
+            border-radius: 8px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .back-to-suppliers {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .menu-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .menu-item {
+            background-color: var(--black);
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .item-name {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-price {
+            color: var(--success);
+            margin-bottom: 0.5rem;
+        }
+
+        .item-stock {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background-color: var(--primary);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            background-color: var(--dark-gray);
+            border: 1px solid var(--border-color);
+            color: var(--white);
+            padding: 0.25rem;
+            border-radius: 4px;
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 0.5rem;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #27ae60;
+        }
+
+        .item-reviews {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .review-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .reviewer-name {
+            font-weight: bold;
+        }
+
+        .review-rating {
+            color: var(--warning);
+        }
+
+        .review-text {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .cart-container {
+            display: none;
+            background-color: var(--dark-gray);
+            border-radius: 8px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .cart-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .cart-items {
+            margin-bottom: 1.5rem;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-item-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+        }
+
+        .cart-item-supplier {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .cart-item-price {
+            color: var(--success);
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .checkout-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .checkout-form {
+            display: none;
+            background-color: var(--dark-gray);
+            border-radius: 8px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--black);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--white);
+        }
+
+        .payment-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-option {
+            flex: 1;
+            padding: 1rem;
+            background-color: var(--black);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .payment-option.active {
+            border-color: var(--primary);
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .payment-option-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .place-order-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .place-order-btn:hover {
+            background-color: #27ae60;
+        }
+
+        .order-confirmation {
+            display: none;
+            background-color: var(--dark-gray);
+            border-radius: 8px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .confirmation-icon {
+            font-size: 3rem;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .notification-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--dark-gray);
+            border: 1px solid var(--primary);
+            border-radius: 5px;
+            padding: 1rem;
+            max-width: 300px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            display: none;
+        }
+
+        .notification-popup.show {
+            display: block;
+            animation: slideIn 0.5s forwards;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .close-notification {
+            background: none;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* Grievance Portal Styles */
+        .grievance-card {
+            background-color: var(--dark-gray);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .grievance-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .grievance-title {
+            font-size: 1.8rem;
+            color: var(--white);
+        }
+
+        .grievance-subtitle {
+            color: var(--light-gray);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .grievance-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .grievance-form .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .grievance-form label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--white);
+        }
+
+        .required {
+            color: var(--error-color);
+        }
+
+        .grievance-form input,
+        .grievance-form select,
+        .grievance-form textarea {
+            padding: 0.8rem;
+            background-color: var(--black);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            color: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .grievance-form input:focus,
+        .grievance-form select:focus,
+        .grievance-form textarea:focus {
+            outline: none;
+            border-color: var(--grievance-accent);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        .grievance-form textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .grievance-btn {
+            background-color: var(--grievance-accent);
+            color: white;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .grievance-btn:hover {
+            background-color: #515faa;
+        }
+
+        @media (max-width: 600px) {
+            .grievance-card {
+                padding: 1.5rem;
+            }
+            
+            .grievance-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="vendor-container">
+        <header>
+            <div class="logo">Vendor Portal</div>
+            <div class="auth-info">
+                <span>Welcome, Vendor</span>
+                <button id="logout-btn">Logout</button>
+            </div>
+        </header>
+
+        <nav>
+            <div class="nav-tab active" data-tab="suppliers">Find Suppliers</div>
+            <div class="nav-tab" data-tab="orders">My Orders</div>
+            <div class="nav-tab" data-tab="grievance"><a href="supplier-grev.html">Grievance Portal</a></div>
+        </nav>
+
+        <main class="main-content">
+            <div class="tab-content active" id="suppliers-content">
+                <div class="search-container">
+                    <input type="text" class="search-input" id="supplier-search" placeholder="Search for suppliers...">
+                    <button class="btn btn-primary" id="location-btn">Use My Location</button>
+                </div>
+
+                <div class="filter-container">
+                   
+                    <button class="filter-btn" data-filter="price-low">Price: Low to High</button>
+                    <button class="filter-btn" data-filter="price-high">Price: High to Low</button>
+                    
+                </div>
+
+                <div class="supplier-list" id="supplier-list">
+                    <!-- Supplier cards will be populated dynamically -->
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+                        Search for suppliers to see results
+                    </div>
+                </div>
+
+                <div class="menu-container" id="menu-container">
+                    <div class="menu-header">
+                        <button class="back-to-suppliers" id="back-to-suppliers">
+                            ← Back to suppliers
+                        </button>
+                        <div class="supplier-rating">
+                            <span class="rating-stars" id="supplier-rating-stars"></span>
+                            <span class="rating-count" id="supplier-rating-count"></span>
+                        </div>
+                    </div>
+
+                    <div class="menu-items" id="menu-items">
+                        <!-- Menu items will be populated dynamically -->
+                    </div>
+                </div>
+
+                <div class="cart-container" id="cart-container">
+                    <h2 class="cart-header">Your Cart</h2>
+                    <div class="cart-items" id="cart-items">
+                        <!-- Cart items will be populated dynamically -->
+                        <div style="text-align: center; padding: 1rem;">Your cart is empty</div>
+                    </div>
+                    <div class="cart-total">
+                        <span>Total:</span>
+                        <span id="cart-total-amount">₹0</span>
+                    </div>
+                    <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+                </div>
+
+                <div class="checkout-form" id="checkout-form">
+                    <h2>Checkout</h2>
+                    <div class="form-group">
+                        <label for="delivery-address">Delivery Address</label>
+                        <input type="text" id="delivery-address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone-number">Phone Number</label>
+                        <input type="tel" id="phone-number" required>
+                    </div>
+
+                    <h3>Payment Method</h3>
+                    <div class="payment-options">
+                        <div class="payment-option" data-payment="cod">
+                            <div class="payment-option-icon">💵</div>
+                            <div>Cash on Delivery</div>
+                        </div>
+                        <div class="payment-option" data-payment="upi">
+                            <div class="payment-option-icon">📱</div>
+                            <div>UPI Payment</div>
+                        </div>
+                    </div>
+
+                    <button class="place-order-btn" id="place-order-btn">Place Order</button>
+                </div>
+
+                <div class="order-confirmation" id="order-confirmation">
+                    <div class="confirmation-icon">✓</div>
+                    <h2>Order Placed Successfully!</h2>
+                    <p>Your order has been received by the supplier and will be prepared shortly.</p>
+                    <p>Order ID: <strong id="order-id">#</strong></p>
+                    <button class="btn btn-primary" id="new-order-btn">Place New Order</button>
+                </div>
+            </div>
+
+            <div class="tab-content" id="orders-content">
+                <h2>My Orders</h2>
+                <div id="orders-list">
+                    <div class="order-item">
+                        <div>Order history is not available</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="grievance-content">
+                <div class="grievance-card">
+                    <div class="grievance-header">
+                        <h1 class="grievance-title">Vendor Grievance Portal</h1>
+                        <p class="grievance-subtitle">Report supplier-related issues to admin</p>
+                    </div>
+                    
+                    <form id="grievanceForm" class="grievance-form">
+                        <div class="form-group">
+                            <label for="vendorName">Your Name <span class="required">*</span></label>
+                            <input type="text" id="vendorName" name="vendorName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="vendorShop">Your Shop Name <span class="required">*</span></label>
+                            <input type="text" id="vendorShop" name="vendorShop" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="supplierName">Supplier Name <span class="required">*</span></label>
+                            <input type="text" id="supplierName" name="supplierName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="supplierShop">Supplier Shop Name <span class="required">*</span></label>
+                            <input type="text" id="supplierShop" name="supplierShop" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="issueDate">Date of Issue <span class="required">*</span></label>
+                            <input type="date" id="issueDate" name="issueDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="issueType">Type of Issue <span class="required">*</span></label>
+                            <select id="issueType" name="issueType" required>
+                                <option value="">Select issue type</option>
+                                <option value="quality">Product Quality Issue</option>
+                                <option value="delivery">Delivery Problem</option>
+                                <option value="payment">Payment Dispute</option>
+                                <option value="behavior">Unprofessional Behavior</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="issueDetails">Detailed Description <span class="required">*</span></label>
+                            <textarea id="issueDetails" name="issueDetails" rows="5" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attachments">Attach Supporting Documents (if any)</label>
+                            <input type="file" id="attachments" name="attachments" multiple>
+                        </div>
+
+                        <button type="submit" class="grievance-btn">Submit Grievance</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <div class="notification-popup" id="notification-popup">
+            <div class="notification-header">
+                <h3 id="notification-title">Notification</h3>
+                <button class="close-notification" id="close-notification">×</button>
+            </div>
+            <div id="notification-message"></div>
+        </div>
+    </div>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const supplierSearch = document.getElementById('supplier-search');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const supplierList = document.getElementById('supplier-list');
+    const menuContainer = document.getElementById('menu-container');
+    const menuItemsContainer = document.getElementById('menu-items');
+    const backToSuppliersBtn = document.getElementById('back-to-suppliers');
+
+    let currentFilter = '';
+    let fullMenuData = [];
+
+    async function fetchMenus() {
+        try {
+            const res = await fetch('http://localhost:5000/api/menus');
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            const menus = await res.json();
+            fullMenuData = menus;
+            renderSuppliers(menus);
+        } catch (err) {
+            console.error("Menu Fetch Error:", err);
+            // supplierList.innerHTML = `<div style="text-align:center; color:red;">Failed to load menus</div>`;
+        }
+    }
+
+    supplierSearch.addEventListener('input', () => {
+        const query = supplierSearch.value.trim().toLowerCase();
+        const filtered = fullMenuData.filter(item =>
+            item.shopname.toLowerCase().includes(query)
+        );
+        renderSuppliers(filtered);
+    });
+
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.getAttribute('data-filter');
+            applyFilter();
+        });
+    });
+
+    function applyFilter() {
+        let filtered = [...fullMenuData];
+        if (currentFilter === 'price-low') {
+            filtered.sort((a, b) => a.itemcost - b.itemcost);
+        } else if (currentFilter === 'price-high') {
+            filtered.sort((a, b) => b.itemcost - a.itemcost);
+        }
+        renderSuppliers(filtered);
+    }
+
+    function groupBySupplier(data) {
+        const grouped = {};
+        data.forEach(item => {
+            if (!grouped[item.gst]) grouped[item.gst] = [];
+            grouped[item.gst].push(item);
+        });
+        return grouped;
+    }
+
+    function renderSuppliers(data) {
+        supplierList.innerHTML = '';
+        const grouped = groupBySupplier(data);
+        if (Object.keys(grouped).length === 0) {
+            supplierList.innerHTML = `<div style="text-align:center;">No suppliers found.</div>`;
+            return;
+        }
+
+        for (const [gst, items] of Object.entries(grouped)) {
+            const card = document.createElement('div');
+            card.className = 'supplier-card';
+            card.innerHTML = `
+                <div class="supplier-info">
+                    <div class="supplier-name">${items[0].shopname}</div>
+                    <div class="supplier-location">GST: ${gst}</div>
+                    <button class="add-to-cart-btn">View Menu</button>
+                </div>
+            `;
+            card.querySelector('button').addEventListener('click', () => renderMenu(items));
+            supplierList.appendChild(card);
+        }
+    }
+
+    window.renderMenu = (items) => {
+        menuItemsContainer.innerHTML = '';
+        menuContainer.style.display = 'block';
+        supplierList.style.display = 'none';
+
+        items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'menu-item';
+            div.innerHTML = `
+                <div class="item-name">${item.itemname}</div>
+                <div class="item-price">₹${item.itemcost}</div>
+                <div class="item-stock">Stock: ${item.todaysstock}</div>
+                <input type="number" id="qty-${item._id}" min="1" max="${item.todaysstock}" value="1" class="quantity-input">
+                <button class="add-to-cart-btn">Add</button>
+            `;
+            div.querySelector('button').addEventListener('click', () => {
+                addItemToCart(item._id, item.itemname, item.itemcost, item.shopname, item.gst);
+            });
+            menuItemsContainer.appendChild(div);
+        });
+    };
+
+    window.addItemToCart = async (itemId, itemname, itemcost, supplierShop, supplierGst) => {
+        const quantity = parseInt(document.getElementById(`qty-${itemId}`).value);
+
+        const vendorName = localStorage.getItem('vendorName');
+        const vendorShop = localStorage.getItem('vendorShop');
+        const vendorGst = localStorage.getItem('vendorGst');
+
+        if (!vendorName || !vendorShop || !vendorGst) {
+            showNotification('Error', 'Vendor not logged in');
+            return;
+        }
+
+        try {
+            const res = await fetch('http://localhost:5000/api/vendorcart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    itemId,
+                    itemname,
+                    itemcost,
+                    quantity,
+                    supplierShop,
+                    supplierGst,
+                    vendorName,
+                    vendorShop,
+                    vendorGst
+                })
+            });
+
+            const result = await res.json();
+            if (res.ok) {
+                showNotification('Success', `${quantity}kg of ${itemname} added to your cart.`);
+            } else {
+                showNotification('Error', result.error || 'Could not add to cart');
+            }
+        } catch (err) {
+            console.error(err);
+            showNotification('Error', 'Server error while adding to cart');
+        }
+    };
+
+    backToSuppliersBtn.addEventListener('click', () => {
+        supplierList.style.display = 'grid';
+        menuContainer.style.display = 'none';
+    });
+
+    window.showNotification = (title, message) => {
+        const popup = document.getElementById('notification-popup');
+        document.getElementById('notification-title').textContent = title;
+        document.getElementById('notification-message').textContent = message;
+        popup.classList.add('show');
+        setTimeout(() => popup.classList.remove('show'), 4000);
+    };
+
+    fetchMenus();
+});
+</script>
+
+
+</body>
+</html>

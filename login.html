@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - StreetEats</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary-bg: #1a1a1a;
+      --card-bg: #ffffff;
+      --text-dark: #333333;
+      --text-light: #f5f5f5;
+      --supplier-color: #10b981;
+      --vendor-color: #4f46e5;
+      --error-color: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--primary-bg);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .login-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .login-title {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: var(--text-dark);
+    }
+
+    .user-type-selector {
+      display: flex;
+      margin-bottom: 1.5rem;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #d1d5db;
+    }
+
+    .user-type-btn {
+      flex: 1;
+      padding: 0.8rem;
+      border: none;
+      background-color: #f3f4f6;
+      color: var(--text-dark);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .user-type-btn.active {
+      color: white;
+    }
+
+    .user-type-btn:first-child.active {
+      background-color: var(--supplier-color);
+    }
+
+    .user-type-btn:last-child.active {
+      background-color: var(--vendor-color);
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+
+    .required {
+      color: var(--error-color);
+    }
+
+    .form-group input {
+      padding: 0.8rem;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--supplier-color);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+
+    .password-input {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #6b7280;
+    }
+
+    .submit-btn {
+      background-color: var(--supplier-color);
+      color: white;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 0.5rem;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.9;
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 1rem;
+      color: #6b7280;
+    }
+
+    .register-link a {
+      color: var(--supplier-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      position: relative;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .registration-options {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .registration-option {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+      transition: transform 0.3s ease;
+    }
+
+    .registration-option i {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .supplier-option {
+      background-color: var(--supplier-color);
+    }
+
+    .vendor-option {
+      background-color: var(--vendor-color);
+    }
+
+    .registration-option:hover {
+      transform: translateY(-5px);
+    }
+
+    @media (max-width: 600px) {
+      .login-card {
+        padding: 1.5rem;
+      }
+
+      .login-title {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <h1 class="login-title">Welcome to StreetEats</h1>
+
+      <div class="user-type-selector">
+        <button id="supplierBtn" class="user-type-btn active">Login as Supplier</button>
+        <button id="vendorBtn" class="user-type-btn">Login as Vendor</button>
+      </div>
+
+      <form id="loginForm" class="login-form">
+        <div class="form-group">
+          <label for="userId">Phone Number <span class="required">*</span></label>
+          <input type="text" id="userId" name="userId" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password <span class="required">*</span></label>
+          <div class="password-input">
+            <input type="password" id="password" name="password" required />
+            <i class="ri-eye-line password-toggle"></i>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Login</button>
+      </form>
+
+      <div class="register-link">
+        <p>Don't have an account? <a href="#" id="registerLink">Click here</a></p>
+      </div>
+
+      <div id="registrationModal" class="modal">
+        <div class="modal-content">
+          <span class="close-modal">&times;</span>
+          <h2>Register as</h2>
+          <div class="registration-options">
+            <a href="supplier-reg.html" class="registration-option supplier-option">
+              <i class="ri-store-2-line"></i>
+              <span>Supplier</span>
+            </a>
+            <a href="vendor-reg.html" class="registration-option vendor-option">
+              <i class="ri-restaurant-2-line"></i>
+              <span>Vendor</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const supplierBtn = document.getElementById('supplierBtn');
+      const vendorBtn = document.getElementById('vendorBtn');
+      const loginForm = document.getElementById('loginForm');
+      const registerLink = document.getElementById('registerLink');
+      const registrationModal = document.getElementById('registrationModal');
+      const closeModal = document.querySelector('.close-modal');
+      const passwordToggle = document.querySelector('.password-toggle');
+      const passwordInput = document.getElementById('password');
+
+      // Toggle user type
+      supplierBtn.addEventListener('click', function () {
+        supplierBtn.classList.add('active');
+        vendorBtn.classList.remove('active');
+        document.querySelector('.submit-btn').style.backgroundColor = 'var(--supplier-color)';
+        document.querySelector('.register-link a').style.color = 'var(--supplier-color)';
+      });
+
+      vendorBtn.addEventListener('click', function () {
+        vendorBtn.classList.add('active');
+        supplierBtn.classList.remove('active');
+        document.querySelector('.submit-btn').style.backgroundColor = 'var(--vendor-color)';
+        document.querySelector('.register-link a').style.color = 'var(--vendor-color)';
+      });
+
+      // Toggle password visibility
+      passwordToggle.addEventListener('click', function () {
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          passwordToggle.classList.replace('ri-eye-line', 'ri-eye-off-line');
+        } else {
+          passwordInput.type = 'password';
+          passwordToggle.classList.replace('ri-eye-off-line', 'ri-eye-line');
+        }
+      });
+
+      // Show registration modal
+      registerLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        registrationModal.style.display = 'flex';
+      });
+
+      // Close modal
+      closeModal.addEventListener('click', function () {
+        registrationModal.style.display = 'none';
+      });
+
+      window.addEventListener('click', function (e) {
+        if (e.target === registrationModal) {
+          registrationModal.style.display = 'none';
+        }
+      });
+
+      // Handle login submission
+      loginForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const userId = document.getElementById('userId').value;
+        const password = document.getElementById('password').value;
+
+        const isVendor = vendorBtn.classList.contains('active');
+        const loginUrl = isVendor
+          ? 'http://localhost:5000/api/vendor/login'
+          : 'http://localhost:5000/api/supplier/login';
+
+        try {
+          const response = await fetch(loginUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId, password })
+          });
+
+          const result = await response.json();
+console.log(result);
+          if (response.ok) {
+            
+            alert(result.message);
+            // After login success:
+localStorage.setItem('supplierPhone', userId);
+localStorage.setItem('supplierGst', result.gst);
+localStorage.setItem('supplierShop', result.shopname);
+
+
+localStorage.setItem('vendorName', result.name);
+    localStorage.setItem('vendorShop', result.shopname);
+    localStorage.setItem('vendorGst', result.gst);
+
+
+
+            window.location.href = result.role === 'vendor'
+              ? 'vendor.html'
+              : 'supplier-portal.html';
+          } else {
+            alert('❌ ' + result.error);
+          }
+        } catch (err) {
+          alert('❌ Login failed: ' + err.message);
+          console.error(err);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

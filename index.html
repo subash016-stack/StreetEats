@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StreetEats - Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-bg: #1a1a1a;
+      --card-bg: #ffffff;
+      --text-dark: #333333;
+      --text-light: #f5f5f5;
+      --supplier-color: #10b981;
+      --vendor-color: #4f46e5;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--primary-bg);
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    header {
+      background-color: var(--card-bg);
+      color: var(--text-dark);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    nav a {
+      color: var(--text-dark);
+      margin-left: 1.5rem;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      color: var(--vendor-color);
+    }
+
+    .hero {
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: #d1d5db;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      padding: 3rem 2rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      color: var(--text-dark);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .card i {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta {
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+
+    .cta button {
+      padding: 0.8rem 2rem;
+      background-color: var(--supplier-color);
+      border: none;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .cta button:hover {
+      background-color: #0f766e;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem 2rem;
+      background-color: #111;
+      color: #999;
+    }
+    
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">StreetEats</div>
+    <nav>
+      <a href="login.html">Login</a>
+      <a href="supplier-reg.html">Suppliers</a>
+      <a href="vendor-reg.html">Vendors</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Connect Vendors and Suppliers Seamlessly</h1>
+    <p>Your one-stop solution to manage food supply chains efficiently with trust and transparency.</p>
+  </section>
+
+  <section class="features">
+    <div class="card">
+      <i class="ri-store-2-line" style="color: var(--supplier-color);"></i>
+      <h3>For Suppliers</h3>
+      <p>Grow your business by connecting with verified vendors. Manage orders, payments, and support easily.</p>
+    </div>
+    <div class="card">
+      <i class="ri-restaurant-2-line" style="color: var(--vendor-color);"></i>
+      <h3>For Vendors</h3>
+      <p>Source quality products from reliable suppliers. Raise grievances, view transactions, and streamline delivery.</p>
+    </div>
+    <div class="card">
+      <i class="ri-file-list-3-line" style="color: #f59e0b;"></i>
+      <h3>Dispute Resolution</h3>
+      <p>Transparent grievance portal for fair conflict resolution and reliable operations.</p>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>Start your journey with StreetEats now</h2>
+    <button onclick="location.href='login.html'">Get Started</button>
+  </section>
+
+  <footer>
+    &copy; 2025 StreetEats. All rights reserved.
+  </footer>
+
+</body>
+<script>
+// Smooth scroll for all internal nav links
+document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const section = document.querySelector(this.getAttribute('href'));
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+
+// Fade-in animation when cards scroll into view
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = 1;
+      entry.target.style.transform = 'translateY(0)';
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.card').forEach(card => {
+  card.style.opacity = 0;
+  card.style.transform = 'translateY(50px)';
+  card.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+  observer.observe(card);
+});
+
+// Add button click ripple effect
+document.querySelectorAll('button').forEach(btn => {
+  btn.addEventListener('click', function (e) {
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    ripple.style.left = `${e.offsetX}px`;
+    ripple.style.top = `${e.offsetY}px`;
+    this.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 600);
+  });
+});
+</script>
+
+
+
+</html>

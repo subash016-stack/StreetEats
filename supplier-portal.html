@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Portal</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --black: #000000;
+            --white: #ffffff;
+            --dark-gray: #1a1a1a;
+            --light-gray: #f5f5f5;
+            --border-color: #333;
+            --grievance-accent: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+        }
+
+        .supplier-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .auth-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .auth-info button {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-info button:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        nav {
+            background-color: var(--dark-gray);
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            color: var(--white);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+
+            a{
+                text-decoration: none;
+                color : white;
+            }
+        }
+
+        .nav-tab:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-tab.active {
+            border-bottom: 3px solid var(--primary);
+            background-color: var(--black);
+        }
+
+        .main-content {
+            flex: 1;
+            background-color: var(--black);
+            padding: 2rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .status-card {
+            background-color: var(--dark-gray);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-toggle {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .toggle-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .open-btn {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .open-btn:hover {
+            background-color: #27ae60;
+        }
+
+        .close-btn {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .close-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--dark-gray);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-card h3 {
+            font-size: 1rem;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .stat-card p {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--white);
+        }
+
+        .notification-badge {
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .menu-form {
+            background-color: var(--dark-gray);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--white);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--black);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--white);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .menu-list {
+            background-color: var(--dark-gray);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .menu-list-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            padding: 1rem;
+            background-color: var(--black);
+            font-weight: bold;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .menu-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            background: none;
+            color: var(--white);
+            transition: color 0.3s ease;
+        }
+
+        .edit-btn {
+            color: var(--primary);
+        }
+
+        .edit-btn:hover {
+            color: #2980b9;
+        }
+
+        .delete-btn {
+            color: var(--danger);
+        }
+
+        .delete-btn:hover {
+            color: #c0392b;
+        }
+
+        .orders-list {
+            background-color: var(--dark-gray);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .order-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .order-id {
+            font-weight: bold;
+        }
+
+        .order-date {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .order-details {
+            margin-top: 1rem;
+        }
+
+        .order-product {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--dark-gray);
+            border: 1px solid var(--primary);
+            border-radius: 5px;
+            padding: 1rem;
+            max-width: 300px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            display: none;
+        }
+
+        .notification-popup.show {
+            display: block;
+            animation: slideIn 0.5s forwards;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .close-notification {
+            background: none;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .qr-code-container {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .qr-code-display {
+            background: white;
+            padding: 20px;
+            display: inline-block;
+            border-radius: 8px;
+            max-width: 300px;
+        }
+
+        .qr-code-title {
+            color: #000;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .qr-code-image {
+            background: #fff;
+            border: 1px solid #eee;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-code-footer {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .payment-history-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .payment-history-item:last-child {
+            border-bottom: none;
+        }
+
+        .grievance-card {
+            background-color: var(--dark-gray);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .grievance-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .grievance-form .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .grievance-form label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--white);
+        }
+
+        .required {
+            color: var(--danger);
+        }
+
+        .grievance-form input,
+        .grievance-form select,
+        .grievance-form textarea {
+            padding: 0.8rem;
+            background-color: var(--black);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            color: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .grievance-form input:focus,
+        .grievance-form select:focus,
+        .grievance-form textarea:focus {
+            outline: none;
+            border-color: var(--grievance-accent);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        .grievance-form textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .grievance-btn {
+            background-color: var(--grievance-accent);
+            color: white;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .grievance-btn:hover {
+            background-color: #0d9f6e;
+        }
+    </style>
+</head>
+<body>
+    <div class="supplier-container">
+        <header>
+            <div class="logo">Supplier Portal</div>
+            <div class="auth-info">
+                <span>Welcome, Supplier</span>
+                <button id="logout-btn">Logout</button>
+            </div>
+        </header>
+
+        <nav>
+            <div class="nav-tab active" data-tab="dashboard">Dashboard</div>
+            <div class="nav-tab" data-tab="menu">Menu Management</div>
+            <div class="nav-tab" data-tab="orders">
+                Orders Received
+                <span class="notification-badge" id="orders-badge" style="display: none;">0</span>
+            </div>
+            <!-- <div class="nav-tab" data-tab="cod">COD Verification</div> -->
+            <div class="nav-tab" data-tab="grievance" ><a href="supplier-grev.html"> Grievance Portal</a> </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="tab-content active" id="dashboard-content">
+                <div class="status-card">
+                    <h2>Shop Status</h2>
+                    <p>Update your shop availability for today</p>
+                    <div class="status-toggle">
+                        <button class="toggle-btn open-btn" id="open-shop">Open Shop</button>
+                        <button class="toggle-btn close-btn" id="close-shop">Close Shop</button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Today's Orders</h3>
+                        <p id="today-orders">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Items in Menu</h3>
+                        <p id="menu-items">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending Orders</h3>
+                        <p id="pending-orders">0</p>
+                    </div>
+                </div>
+
+                <h2>Recent Activity</h2>
+                <div class="orders-list" id="recent-orders">
+                    <div class="order-item">
+                        <div class="order-header">
+                            <span class="order-id">No recent activity</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="menu-content">
+                <div class="menu-form">
+                    <h2>Add/Update Menu Item</h2>
+                    <form id="menu-form">
+                        <input type="hidden" id="item-id">
+                        <div class="form-group">
+                            <label for="item-name">Item Name</label>
+                            <input type="text" id="item-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="item-price">Price Per Kg(₹)</label>
+                            <input type="number" id="item-price" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="item-stock">Today's Stock(In Kg)</label>
+                            <input type="number" id="item-stock" required min="0">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="save-item">Add Item</button>
+                            <button type="button" class="btn" id="cancel-edit" style="display: none;">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <h2>Current Menu</h2>
+                <div class="menu-list">
+                    <div class="menu-list-header">
+                        <div>Item Name</div>
+                        <div>Price</div>
+                        <div>Stock</div>
+                        <div>Actions</div>
+                    </div>
+                    <div id="menu-items-list">
+                        <div class="menu-item">
+                            <div>No items added yet</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="orders-content">
+                <h2>Orders Received</h2>
+                <div class="orders-list" id="all-orders">
+                    <div class="order-item">
+                        <div>No orders received yet</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="cod-content">
+                <div class="status-card">
+                    <h2>COD Payment Collection</h2>
+                    <p>Show QR code to collect payment for COD orders</p>
+                    
+                    <div id="qr-code-container" style="display: none; text-align: center; margin-top: 20px;">
+                        <img src="code.JPG" alt="Payment QR Code" style="width: 200px; height: 200px;">
+                    </div>
+                    
+                    <button id="show-qr-btn" class="btn btn-primary" style="margin-top: 20px;">Show QR Code</button>
+                </div>
+
+                <div class="status-card">
+                    <h2>Payment History</h2>
+                    <div id="payment-history">
+                        <div class="order-item">
+                            <div>No payment history available</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="grievance-content">
+                <div class="grievance-card">
+                    <div class="header">
+                        <h2>Supplier Grievance Portal</h2>
+                        <p class="subtitle">Report vendor-related issues to admin</p>
+                    </div>
+                    
+                    <form id="grievanceForm" class="grievance-form">
+                        <div class="form-group">
+                            <label for="supplierName">Your Name <span class="required">*</span></label>
+                            <input type="text" id="supplierName" name="supplierName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="supplierShop">Your Shop Name <span class="required">*</span></label>
+                            <input type="text" id="supplierShop" name="supplierShop" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="vendorName">Vendor Name <span class="required">*</span></label>
+                            <input type="text" id="vendorName" name="vendorName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="vendorLocation">Vendor Location <span class="required">*</span></label>
+                            <input type="text" id="vendorLocation" name="vendorLocation" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="issueDate">Date of Issue <span class="required">*</span></label>
+                            <input type="date" id="issueDate" name="issueDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="issueType">Type of Issue <span class="required">*</span></label>
+                            <select id="issueType" name="issueType" required>
+                                <option value="">Select issue type</option>
+                                <option value="payment">Payment Delay</option>
+                                <option value="order">Order Cancellation</option>
+                                <option value="behavior">Unprofessional Behavior</option>
+                                <option value="damage">Product Damage Claims</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="issueDetails">Detailed Description <span class="required">*</span></label>
+                            <textarea id="issueDetails" name="issueDetails" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attachments">Attach Supporting Documents (if any)</label>
+                            <input type="file" id="attachments" name="attachments" multiple>
+                        </div>
+
+                        <button type="submit" class="grievance-btn">Submit Grievance</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <div class="notification-popup" id="notification-popup">
+            <div class="notification-header">
+                <h3 id="notification-title">Notification</h3>
+                <button class="close-notification" id="close-notification">×</button>
+            </div>
+            <div id="notification-message"></div>
+        </div>
+    </div>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+  const navTabs = document.querySelectorAll('.nav-tab');
+  const tabContents = document.querySelectorAll('.tab-content');
+  const openShopBtn = document.getElementById('open-shop');
+  const closeShopBtn = document.getElementById('close-shop');
+  const logoutBtn = document.getElementById('logout-btn');
+  const menuForm = document.getElementById('menu-form');
+  const cancelEditBtn = document.getElementById('cancel-edit');
+  const grievanceForm = document.getElementById('grievanceForm');
+
+  let editItemId = null;
+
+  const phone = localStorage.getItem('supplierPhone');
+
+  // Handle Tab Switching
+  navTabs.forEach(tab => {
+    tab.addEventListener('click', function () {
+      navTabs.forEach(t => t.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+      const tabId = this.getAttribute('data-tab');
+      document.getElementById(`${tabId}-content`).classList.add('active');
+    });
+  });
+
+  // Shop Status
+  openShopBtn.addEventListener('click', async function () {
+    await updateShopStatusInDB(true);
+  });
+
+  closeShopBtn.addEventListener('click', async function () {
+    await updateShopStatusInDB(false);
+  });
+
+async function updateShopStatusInDB(status) {
+  try {
+    const phone = localStorage.getItem('supplierPhone');
+    if (!phone) {
+      console.error('No phone number found in localStorage');
+      return;
+    }
+
+    const response = await fetch('http://localhost:5000/api/supplier/shop-status', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}` // Add if using authentication
+      },
+      body: JSON.stringify({ 
+        phone: phone, 
+        status: status 
+      })
+    });
+
+    const result = await response.json();
+    
+    if (response.ok) {
+      console.log('✅ Shop status updated:', result.message);
+      showNotification(status ? 'Shop is now open' : 'Shop is now closed', 'success');
+    } else {
+      console.error('❌ Error updating shop status:', result.error);
+      showNotification('Failed to update shop status', 'error');
+    }
+  } catch (err) {
+    console.error('❌ Network error:', err);
+    showNotification('Network error - please try again', 'error');
+  }
+}
+
+// Helper function to show notifications
+function showNotification(message, type = 'info') {
+  const notification = document.getElementById('notification-popup');
+  const notificationMessage = document.getElementById('notification-message');
+  
+  notificationMessage.textContent = message;
+  notification.classList.add('show');
+  
+  // Style based on type
+  notification.style.backgroundColor = type === 'error' ? '#e74c3c' : 
+                                     type === 'success' ? '#2ecc71' : '#3498db';
+  
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 3000);
+}
+  // Load Menu Items
+  function loadMenuItems() {
+    fetch(`http://localhost:5000/api/supplier/store/${phone}`)
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(items => renderMenuItems(items))
+      .catch(err => {
+        console.error('Error fetching items:', err);
+        document.getElementById('menu-items-list').innerHTML = '<p style="color:red;">Failed to load menu items</p>';
+      });
+  }
+
+  // Render Menu
+  function renderMenuItems(items) {
+    const list = document.getElementById('menu-items-list');
+    if (!items || items.length === 0) {
+      list.innerHTML = '<p>No menu items found.</p>';
+      return;
+    }
+    list.innerHTML = '';
+    items.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'menu-item';
+      div.innerHTML = `
+        <strong>${item.itemname}</strong> - ₹${item.itemcost} (Stock: ${item.todaysstock})
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  // Add Item
+  menuForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const itemname = this['item-name'].value;
+    const itemcost = this['item-price'].value;
+    const todaysstock = this['item-stock'].value;
+    const gst = localStorage.getItem('supplierGst');
+    const shopname = localStorage.getItem('supplierShop');
+
+    fetch('http://localhost:5000/api/supplier/menu', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, gst, shopname, itemname, itemcost, todaysstock })
+    })
+      .then(res => res.json())
+      .then(data => {
+        alert('Item added successfully!');
+        menuForm.reset();
+        loadMenuItems();
+      })
+      .catch(err => {
+        console.error('❌ Error adding item:', err);
+        alert('Error saving item');
+      });
+  });
+
+  // Grievance Submit
+  if (grievanceForm) {
+    grievanceForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const formData = new FormData();
+      formData.append('supplierName', this['supplierName'].value);
+      formData.append('supplierShop', this['supplierShop'].value);
+      formData.append('vendorName', this['vendorName'].value);
+      formData.append('vendorLocation', this['vendorLocation'].value);
+      formData.append('issueDate', this['issueDate'].value);
+      formData.append('issueType', this['issueType'].value);
+      formData.append('issueDetails', this['issueDetails'].value);
+      formData.append('postedBy', 'supplier');
+
+      if (this['attachments'].files.length > 0) {
+        Array.from(this['attachments'].files).forEach(file => {
+          formData.append('attachments', file);
+        });
+      }
+
+      fetch('http://localhost:5000/api/grievance', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          alert('Grievance submitted successfully!');
+          this.reset();
+        })
+        .catch(err => {
+          console.error('❌ Grievance error:', err);
+          alert('Failed to submit grievance');
+        });
+    });
+  }
+
+  // Logout
+  logoutBtn.addEventListener('click', () => {
+    localStorage.clear();
+    location.href = 'login.html';
+  });
+
+  // Load on startup
+  loadMenuItems();
+});
+
+</script>
+
+
+</body>
+</html>
